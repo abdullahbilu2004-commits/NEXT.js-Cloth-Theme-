@@ -1,8 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { useRouter } from "next/navigation";
+import { CartContext } from "@/context/CartContext";
 
 export default function ProductDetails({ product }) {
+  const { addToCart } = useContext(CartContext);
+  const router = useRouter();
 
   const [selectedSize, setSelectedSize] = useState("");
 
@@ -37,75 +41,34 @@ export default function ProductDetails({ product }) {
     },
   ];
 
-
+  // ================= ADD TO CART =================
   const handleAddToCart = () => {
-
     if (!selectedSize) {
       alert("Please select a size.");
       return;
     }
 
-    const existingCart =
-      JSON.parse(localStorage.getItem("cart")) || [];
-
-    const existingItem = existingCart.find(
-      (item) =>
-        item.id === product.id &&
-        item.size === selectedSize &&
-        item.color === selectedColor
-    );
-
-
-    if (existingItem) {
-
-      existingItem.quantity += 1;
-
-    } else {
-
-      existingCart.push({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        image: product.image,
-        size: selectedSize,
+    addToCart(
+      {
+        ...product,
         color: selectedColor,
-        quantity: 1,
-      });
-
-    }
-
-
-    localStorage.setItem(
-      "cart",
-      JSON.stringify(existingCart)
+      },
+      selectedSize
     );
 
-
-    // Navbar ya doosre components ko update karne ke liye event
-    window.dispatchEvent(
-      new Event("cartUpdated")
-    );
-
-
-    alert("Product added to cart.");
+    router.push("/cart");
   };
 
-
+  // ================= WISHLIST =================
   const handleWishlist = () => {
-
     const existingWishlist =
-      JSON.parse(
-        localStorage.getItem("wishlist")
-      ) || [];
-
+      JSON.parse(localStorage.getItem("wishlist")) || [];
 
     const alreadyExists = existingWishlist.some(
       (item) => item.id === product.id
     );
 
-
     if (!alreadyExists) {
-
       existingWishlist.push({
         id: product.id,
         name: product.name,
@@ -117,9 +80,7 @@ export default function ProductDetails({ product }) {
         "wishlist",
         JSON.stringify(existingWishlist)
       );
-
     }
-
 
     window.dispatchEvent(
       new Event("wishlistUpdated")
@@ -132,18 +93,17 @@ export default function ProductDetails({ product }) {
     );
   };
 
-
   return (
-    <div className="w-full border border-black/10 bg-[#f5f5f3] p-5 md:p-6">
+    <div className="w-full border border-black/10 bg-[#f5f5f3] p-5 sm:p-6">
 
       {/* ================= WISHLIST ================= */}
-      <div className="flex justify-end">
+      <div className="flex h-8 items-center justify-end">
 
         <button
           type="button"
           onClick={handleWishlist}
           aria-label="Add to wishlist"
-          className="flex h-6 w-6 items-center justify-center text-[12px] transition hover:scale-110"
+          className="flex h-8 w-8 items-center justify-center text-[20px] leading-none transition hover:scale-110"
         >
           ♡
         </button>
@@ -152,13 +112,13 @@ export default function ProductDetails({ product }) {
 
 
       {/* ================= PRODUCT NAME ================= */}
-      <div className="mt-3">
+      <div className="mt-5">
 
-        <h1 className="text-[12px] font-medium uppercase leading-[1.3] tracking-[0.02em]">
+        <h1 className="text-[15px] font-medium uppercase leading-[1.35] tracking-[0.02em]">
           {product.name}
         </h1>
 
-        <p className="mt-2 text-[11px]">
+        <p className="mt-3 text-[14px]">
           ${product.price}
         </p>
 
@@ -166,13 +126,13 @@ export default function ProductDetails({ product }) {
 
 
       {/* ================= MRP ================= */}
-      <p className="mt-2 text-[9px] text-[#777]">
+      <p className="mt-3 text-[10px] leading-4 text-[#777]">
         MRP incl. of all taxes
       </p>
 
 
       {/* ================= DESCRIPTION ================= */}
-      <p className="mt-7 text-[9px] leading-[1.5] text-[#444]">
+      <p className="mt-7 text-[11px] leading-[1.6] text-[#444]">
         Relaxed-fit shirt. Camp collar and short
         sleeves. Button-up front.
       </p>
@@ -181,12 +141,11 @@ export default function ProductDetails({ product }) {
       {/* ================= COLOR ================= */}
       <div className="mt-7">
 
-        <p className="mb-2 text-[9px] text-[#777]">
+        <p className="mb-3 text-[10px] uppercase tracking-[0.08em] text-[#777]">
           Color
         </p>
 
-
-        <div className="flex gap-[3px]">
+        <div className="flex flex-wrap gap-2">
 
           {colors.map((color) => (
             <button
@@ -197,7 +156,7 @@ export default function ProductDetails({ product }) {
               }
               aria-label={color.name}
               title={color.name}
-              className={`h-[23px] w-[23px] border ${
+              className={`h-[30px] w-[30px] shrink-0 border ${
                 selectedColor === color.name
                   ? "border-black"
                   : "border-transparent"
@@ -214,14 +173,13 @@ export default function ProductDetails({ product }) {
 
 
       {/* ================= SIZE ================= */}
-      <div className="mt-5">
+      <div className="mt-6">
 
-        <p className="mb-2 text-[9px] text-[#777]">
+        <p className="mb-3 text-[10px] uppercase tracking-[0.08em] text-[#777]">
           Size
         </p>
 
-
-        <div className="flex gap-[3px]">
+        <div className="flex flex-wrap gap-2">
 
           {product.sizes.map((size) => (
             <button
@@ -230,7 +188,7 @@ export default function ProductDetails({ product }) {
               onClick={() =>
                 setSelectedSize(size)
               }
-              className={`flex h-[23px] min-w-[23px] items-center justify-center border px-1 text-[8px] transition ${
+              className={`flex h-[36px] min-w-[36px] shrink-0 items-center justify-center border px-2 text-[10px] transition ${
                 selectedSize === size
                   ? "border-black bg-black text-white"
                   : "border-black/15 hover:border-black"
@@ -246,22 +204,22 @@ export default function ProductDetails({ product }) {
 
 
       {/* ================= SIZE GUIDE ================= */}
-      <div className="mt-2">
+      <div className="mt-3 flex items-center">
 
         <button
           type="button"
-          className="text-[7px] uppercase text-[#777] hover:text-black"
+          className="text-[8px] uppercase tracking-[0.04em] text-[#777] hover:text-black"
         >
           Find your size
         </button>
 
-        <span className="mx-1 text-[7px] text-[#aaa]">
+        <span className="mx-2 text-[8px] text-[#aaa]">
           |
         </span>
 
         <button
           type="button"
-          className="text-[7px] uppercase text-[#777] hover:text-black"
+          className="text-[8px] uppercase tracking-[0.04em] text-[#777] hover:text-black"
         >
           Measurement guide
         </button>
@@ -273,7 +231,7 @@ export default function ProductDetails({ product }) {
       <button
         type="button"
         onClick={handleAddToCart}
-        className="mt-3 flex h-7 w-full items-center justify-center bg-[#dededc] text-[9px] uppercase transition hover:bg-black hover:text-white"
+        className="mt-5 flex h-[46px] cursor-pointer w-full items-center justify-center bg-[#dededc] text-[11px] uppercase tracking-[0.07em] transition hover:bg-black hover:text-white"
       >
         Add
       </button>
@@ -281,3 +239,4 @@ export default function ProductDetails({ product }) {
     </div>
   );
 }
+
