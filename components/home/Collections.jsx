@@ -62,7 +62,8 @@ export default function Collections() {
         : products.slice(0, 3);
 
     return (
-        <section className="w-full bg-[#f5f5f3] px-6 py-16 text-[#222] md:px-10 md:py-20">
+        <section id="collection"
+         className="w-full bg-[#f5f5f3] px-6 py-16 text-[#222] md:px-10 md:py-20">
 
             <div className="mx-auto max-w-[1200px]">
 

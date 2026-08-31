@@ -36,7 +36,7 @@ export default function Navbar() {
 
           {/* Collections */}
           <Link
-            href="/collections"
+            href="#collection"
             className="text-[12px] tracking-[0.08em] transition-opacity hover:opacity-50"
           >
             Collections
@@ -44,7 +44,7 @@ export default function Navbar() {
 
           {/* New */}
           <Link
-            href="/products"
+            href="#new"
             className="text-[12px] tracking-[0.08em] transition-opacity hover:opacity-50"
           >
             New
@@ -76,14 +76,14 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
 
           {/* Theme / Mode */}
-          <button
+          {/* <button
             aria-label="Theme"
             className="flex h-7 w-7 items-center justify-center rounded-full bg-[#222] text-white transition-transform hover:scale-105"
           >
             <span className="text-[11px]">
               ◔
             </span>
-          </button>
+          </button> */}
 
 
           {/* Cart */}
@@ -103,7 +103,7 @@ export default function Navbar() {
 
           {/* Account */}
           <Link
-            href="/account"
+            href="/signup"
             aria-label="Account"
             className="flex h-7 w-7 items-center justify-center rounded-full bg-[#222] text-white transition-transform hover:scale-105"
           >
